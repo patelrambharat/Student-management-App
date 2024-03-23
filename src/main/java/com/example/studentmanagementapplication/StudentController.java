@@ -1,6 +1,8 @@
 package com.example.studentmanagementapplication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -16,6 +18,7 @@ public class StudentController {
     //make the function to get info
     @GetMapping("/get")
     public Student getStudent(@RequestParam("q") int regNo){
+        System.out.println("Service bean called in controller : " +studentService);
         return studentService.getStudent(regNo);
     }
     //api means take some input and give the output
@@ -23,13 +26,19 @@ public class StudentController {
     //get all the attribute
     @PostMapping("/add")
     public String addStudent(@RequestBody Student student){
+        System.out.println("Service bean called in controller : " +studentService);
         String result = studentService.addStudent(student);
         return result;
     }
     @GetMapping("/getByPath/{id}")
-    public Student getStudentUsingPath(@PathVariable("id") int regNo){
+    public ResponseEntity getStudentUsingPath(@PathVariable("id") int regNo){
+        System.out.println("Service bean called in controller : " +studentService);
+        Student  student =  studentService.getStudentUsingPath(regNo);
+        if(student == null){
+            return new ResponseEntity("Id does'nt exist", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(student, HttpStatus.FOUND);
 
-        return studentService.getStudentUsingPath(regNo);
     }
 
     //I'm updating something then mapping is
